@@ -1,7 +1,7 @@
 
 # 봇 설정
 bot_name = "봇이름" # 표기될 봇이름.
-bot_status_msg = "%s<-명령어확인"%botname # 봇 상태창 메세지, 기본값:봇이름<-명령어확인
+bot_status_msg = "%s<-명령어확인"%bot_name # 봇 상태창 메세지, 기본값:봇이름<-명령어확인
 bot_status = 'dnd' # 봇 상태: online,away,dnd,invisible, 기본값 = dnd
 dict_file = "save.txt" # 유저 사전이 저장될 파일명
 botdict_name = "사전" # 봇 사전 이름

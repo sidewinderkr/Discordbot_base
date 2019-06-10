@@ -14,7 +14,6 @@ import random
 import requests
 from io import BytesIO
 import os
-import msgcut
 import re
 
 import config
@@ -24,6 +23,14 @@ import defaultNotiParser
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Base DIR
 client = discord.Client()                             # Discord client
 notepad = dict()                                      # Dictionary for note
+
+# 명령어는 제외하고 말을 듣게 하자
+def cutmsg(sinput):
+  commands = ['!검색',"!확인","!삭제","!추가","!도움"]
+  output = sinput.replace(" ","")
+  for command in commands:
+    output = output.replace(command,"")
+  return output
 
 # Initializing
 @client.event
@@ -92,7 +99,7 @@ async def on_message(message):
     # 추가 -> 사전에 추가하기
     # 구분자 :: <- 더 좋은걸 발견하지 못함
     if "!추가" in message.content:
-       note = msgcut.cutmsg(message.content)
+       note = cutmsg(message.content)
        note = note.split('::')
        notepad[note[0]] = note[1]
        note_add_text = '%s에 %s 항목을 기록하였습니다.'%(config.botdict_name, note[0])
@@ -102,7 +109,7 @@ async def on_message(message):
     # 노트에 키워드가 있을 때 -> 그 키워드를 포함하는 모든 내용을 리턴
     # --키워드가 없을 때 -> 없다고 함(솔직)
     if "!검색" in message.content:
-       keyword = msgcut.cutmsg(message.content)
+       keyword = cutmsg(message.content)
        if(message.content == "!검색"): keyword = "" #물론 !검색은 제외 ^^;;
        matching = [s for s in notepad if keyword in s]
        if len(matching) != 0:
@@ -116,7 +123,7 @@ async def on_message(message):
     
     # 확인 -> 사실상 (괄호) 때문에 사장된 느낌.
     if "!확인" in message.content:
-       keyword = msgcut.cutmsg(message.content)
+       keyword = cutmsg(message.content)
        if keyword in notepad:
            check_text1 = '[%s] %s'%(keyword,notepad[keyword])
            await client.send_message(message.channel, check_text1)
@@ -127,7 +134,7 @@ async def on_message(message):
     # 삭제
     # 잘 안쓰이긴하는데, 가아끔 유용함.
     if "!삭제" in message.content:
-       keyword = msgcut.cutmsg(message.content)
+       keyword = cutmsg(message.content)
        if keyword in notepad:
            del notepad[keyword]
            deltext1 = '%s에서 %s에 대한 항목을 삭제했습니다.'%(config.botdict_name, keyword)
@@ -148,7 +155,7 @@ async def on_message(message):
     # 도움말 기능
     # discord embed 형식 메세지를 활용.
     if "!도움"  in message.content:
-       keyword = msgcut.cutmsg(message.content)
+       keyword = cutmsg(message.content)
        em = discord.Embed(title='명령어 리스트', description='명령어 리스트는 아래와 같습니다.', colour=0xDEADBF)
        em.add_field(name="!추가",value="노트에 내용을 추가합니다. 키워드::내용 순으로 입력합니다.\n`ex) !추가 마지막서프::2017년 5월 5일`",inline=True)
        em.add_field(name="!검색",value="노트 키워드를 검색합니다. 전체 이름을 입력하지 않아도 검색이 됩니다. \n아무것도 입력하지 않으면 >전체 목록을 보여줍니다. \n`ex) !검색 서프`",inline=True)

@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import os
 
 requesturl = 'http://granbluefantasy.jp/news/index.php'
-checkfile = latest.txt
+checkfile = "latest.txt"
 
 def get_latest():
     # 확인용 웹사이트의 공지 최근 타이틀을 확인, 옛날 자료와 비교,
